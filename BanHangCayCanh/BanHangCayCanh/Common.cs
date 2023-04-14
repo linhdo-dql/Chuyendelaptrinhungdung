@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -43,6 +44,36 @@ namespace BanHangCayCanh
                 }
             }
             return maxId;
+        }
+        public static void AddUpdateAppSettings(string key, string value)
+        {
+            try
+            {
+                //Load your file path here
+                string path = "D:\\ChuyenDe\\BanHangCayCanh\\BanHangCayCanh\\App.config";
+                ExeConfigurationFileMap configFileMap = new ExeConfigurationFileMap();
+                configFileMap.ExeConfigFilename = path;
+                System.Configuration.Configuration config = ConfigurationManager.OpenMappedExeConfiguration(configFileMap, ConfigurationUserLevel.None);
+                //Get the appsettings value
+                var settings = config.AppSettings.Settings;
+                //check if input key is new or already existing
+                if (settings[key] == null)
+                {
+                    //if new then add the value
+                    settings.Add(key, value);
+                }
+                else
+                {
+                    //if not then update the key value
+                    settings[key].Value = value;
+                }
+                config.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(config.AppSettings.SectionInformation.Name);
+            }
+            catch (ConfigurationErrorsException exs)
+            {
+                throw new Exception("Error writing app settings" + exs.InnerException);
+            }
         }
     }
 }

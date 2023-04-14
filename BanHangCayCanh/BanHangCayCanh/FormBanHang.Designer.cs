@@ -820,6 +820,7 @@
             dgvHoaDon.ShowRowErrors = false;
             dgvHoaDon.Size = new Size(859, 698);
             dgvHoaDon.TabIndex = 21;
+            dgvHoaDon.CellContentClick += dgvHoaDon_CellContentClick;
             dgvHoaDon.Click += dgvHoaDon_Click;
             // 
             // idHoaDonAll

@@ -359,5 +359,9 @@ namespace BanHangCayCanh
             dialog.ShowDialog();
         }
 
+        private void dgvHoaDon_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }

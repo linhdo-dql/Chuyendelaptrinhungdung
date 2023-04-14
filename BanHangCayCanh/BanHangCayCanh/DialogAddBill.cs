@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace BanHangCayCanh
     {
         public bool IsFromFormCayCanh { get; set; }
 
-        private DataTable dtNewCTHD;
+        private bool isOldCustomer;
         private string currentId;
         public string currentIdHoaDon;
 
@@ -78,8 +79,9 @@ namespace BanHangCayCanh
 
         private void LoadCBBStaff()
         {
-            string sql = "Select * from NhanVien";
-            Data.FillCombo(sql, cbbNhanVien, "idNhanVien", "idNhanVien");
+            /*string sql = "Select * from NhanVien";
+            Data.FillCombo(sql, cbbNhanVien, "idNhanVien", "idNhanVien");*/
+            txtIdNhanVien.Text = ConfigurationManager.AppSettings.Get("AccountSaved");
         }
 
         private void LoadCBBCustormer()
@@ -307,7 +309,7 @@ namespace BanHangCayCanh
         private void ResetDialog()
         {
             dgvCTHD.ClearSelection();
-            cbbNhanVien.Text = "";
+            txtIdNhanVien.Text = "";
             cbbKhachHang.Text = "";
             txtDiaChiKH.Text = "";
             txtSDT.Text = "";
@@ -350,12 +352,38 @@ namespace BanHangCayCanh
                 return;
             }
             sql = "Insert into HoaDon VALUES (N'" + currentIdHoaDon +
-                  "',N'" + cbbNhanVien.SelectedValue +
+                  "',N'" + txtIdNhanVien.Text +
                   "',N'" + dtpNgayLap.Text +
                   "',N'" + cbbKhachHang.SelectedValue +
                   "'," + txtGiamGia.Text +
                   "," + txtTongTien.Text + ")";
             Data.RunSQL(sql);
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panel12_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void rbKhachHangMoi_CheckedChanged(object sender, EventArgs e)
+        {
+            isOldCustomer = false;
+            panelKhachHang.Visible = true;
+            txtTenKhachHang.Visible = true;
+            cbbKhachHang.Visible = false;
+        }
+
+        private void rbKhachHangCu_CheckedChanged(object sender, EventArgs e)
+        {
+            isOldCustomer = true;
+            panelKhachHang.Visible = true;
+            cbbKhachHang.Visible = true;
+            txtTenKhachHang.Visible = false;
         }
     }
 

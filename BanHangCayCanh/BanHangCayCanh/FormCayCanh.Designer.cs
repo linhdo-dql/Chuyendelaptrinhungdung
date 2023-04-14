@@ -38,7 +38,8 @@
             anh = new DataGridViewImageColumn();
             idCayCanh = new DataGridViewTextBoxColumn();
             tenCayCanh = new DataGridViewTextBoxColumn();
-            idLoaicay = new DataGridViewTextBoxColumn();
+            tenLoaicay = new DataGridViewTextBoxColumn();
+            idLoaiCay = new DataGridViewTextBoxColumn();
             moTa = new DataGridViewTextBoxColumn();
             tuoi = new DataGridViewTextBoxColumn();
             mauSac = new DataGridViewTextBoxColumn();
@@ -128,7 +129,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dgvCayCanh.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvCayCanh.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvCayCanh.Columns.AddRange(new DataGridViewColumn[] { anh, idCayCanh, tenCayCanh, idLoaicay, moTa, tuoi, mauSac, soLuong, gia, kichThuoc, delete, selected, pathAnh });
+            dgvCayCanh.Columns.AddRange(new DataGridViewColumn[] { anh, idCayCanh, tenCayCanh, tenLoaicay, idLoaiCay, moTa, tuoi, mauSac, soLuong, gia, kichThuoc, delete, selected, pathAnh });
             dgvCayCanh.Dock = DockStyle.Fill;
             dgvCayCanh.EnableHeadersVisualStyles = false;
             dgvCayCanh.Location = new Point(11, 13);
@@ -170,7 +171,8 @@
             idCayCanh.MinimumWidth = 6;
             idCayCanh.Name = "idCayCanh";
             idCayCanh.ReadOnly = true;
-            idCayCanh.Width = 120;
+            idCayCanh.Visible = false;
+            idCayCanh.Width = 125;
             // 
             // tenCayCanh
             // 
@@ -180,13 +182,21 @@
             tenCayCanh.ReadOnly = true;
             tenCayCanh.Width = 125;
             // 
-            // idLoaicay
+            // tenLoaicay
             // 
-            idLoaicay.HeaderText = "Loại Cây";
-            idLoaicay.MinimumWidth = 6;
-            idLoaicay.Name = "idLoaicay";
-            idLoaicay.ReadOnly = true;
-            idLoaicay.Width = 95;
+            tenLoaicay.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            tenLoaicay.HeaderText = "Loại Cây";
+            tenLoaicay.MinimumWidth = 6;
+            tenLoaicay.Name = "tenLoaicay";
+            tenLoaicay.ReadOnly = true;
+            // 
+            // idLoaiCay
+            // 
+            idLoaiCay.HeaderText = "Mã Loại Cây";
+            idLoaiCay.MinimumWidth = 6;
+            idLoaiCay.Name = "idLoaiCay";
+            idLoaiCay.Visible = false;
+            idLoaiCay.Width = 125;
             // 
             // moTa
             // 
@@ -214,7 +224,7 @@
             mauSac.MinimumWidth = 6;
             mauSac.Name = "mauSac";
             mauSac.ReadOnly = true;
-            mauSac.Width = 92;
+            mauSac.Width = 85;
             // 
             // soLuong
             // 
@@ -223,7 +233,7 @@
             soLuong.MinimumWidth = 6;
             soLuong.Name = "soLuong";
             soLuong.ReadOnly = true;
-            soLuong.Width = 98;
+            soLuong.Width = 91;
             // 
             // gia
             // 
@@ -232,7 +242,7 @@
             gia.MinimumWidth = 6;
             gia.Name = "gia";
             gia.ReadOnly = true;
-            gia.Width = 89;
+            gia.Width = 83;
             // 
             // kichThuoc
             // 
@@ -240,7 +250,6 @@
             kichThuoc.HeaderText = "Kích thước";
             kichThuoc.MinimumWidth = 6;
             kichThuoc.Name = "kichThuoc";
-            kichThuoc.Width = 108;
             // 
             // delete
             // 
@@ -508,11 +517,11 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(227, 429);
+            label9.Location = new Point(272, 429);
             label9.Name = "label9";
-            label9.Size = new Size(72, 20);
+            label9.Size = new Size(27, 20);
             label9.TabIndex = 24;
-            label9.Text = "Số lượng:";
+            label9.Text = "SL:";
             // 
             // txtGiaBan
             // 
@@ -570,7 +579,7 @@
             cbbLoaiCay.Location = new Point(112, 425);
             cbbLoaiCay.Margin = new Padding(3, 4, 3, 4);
             cbbLoaiCay.Name = "cbbLoaiCay";
-            cbbLoaiCay.Size = new Size(92, 28);
+            cbbLoaiCay.Size = new Size(154, 28);
             cbbLoaiCay.TabIndex = 17;
             // 
             // label5
@@ -798,10 +807,12 @@
         private Button btnSua;
         private Button btnThem;
         private Button btnReset;
+        private Label txtSoLuongDaChon;
         private DataGridViewImageColumn anh;
         private DataGridViewTextBoxColumn idCayCanh;
         private DataGridViewTextBoxColumn tenCayCanh;
-        private DataGridViewTextBoxColumn idLoaicay;
+        private DataGridViewTextBoxColumn tenLoaicay;
+        private DataGridViewTextBoxColumn idLoaiCay;
         private DataGridViewTextBoxColumn moTa;
         private DataGridViewTextBoxColumn tuoi;
         private DataGridViewTextBoxColumn mauSac;
@@ -811,6 +822,5 @@
         private DataGridViewImageColumn delete;
         private DataGridViewCheckBoxColumn selected;
         private DataGridViewTextBoxColumn pathAnh;
-        private Label txtSoLuongDaChon;
     }
 }

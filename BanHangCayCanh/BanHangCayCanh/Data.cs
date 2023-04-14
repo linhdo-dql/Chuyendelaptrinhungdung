@@ -17,7 +17,7 @@ namespace BanHangCayCanh
         public static void Connect()
         {
             Con = new SqlConnection();   //Khởi tạo đối tượng
-            Con.ConnectionString = @"Data Source=DESKTOP-L1L9FDS\SQLEXPRESS;Initial Catalog=QLBHCC;Integrated Security=True";
+            Con.ConnectionString = @"Data Source=DESKTOP-L1L9FDS\SQLEXPRESS;AttachDbFilename=D:\ChuyenDe\BanHangCayCanh\BanHangCayCanh\Resources\SQL\QLBHCC.mdf;Integrated Security=True";
             Con.Open();                  //Mở kết nối
             //Kiểm tra kết nối
             if (Con.State == ConnectionState.Open)

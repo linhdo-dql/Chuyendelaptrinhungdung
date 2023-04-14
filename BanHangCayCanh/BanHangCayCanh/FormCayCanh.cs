@@ -36,7 +36,7 @@ namespace BanHangCayCanh
         private void LoadCombobox()
         {
             string sql = "Select * from LoaiCay";
-            Data.FillCombo(sql, cbbLoaiCay, "idLoaiCay", "idLoaiCay");
+            Data.FillCombo(sql, cbbLoaiCay, "idLoaiCay", "tenLoaiCay");
             cbbLoaiCay.Text = "";
         }
 
@@ -47,7 +47,7 @@ namespace BanHangCayCanh
             titleTable.Text = "Danh sách cây cảnh";
             btnHuyTimKiem.Visible = false;
             dgvCayCanh.AutoGenerateColumns = false;
-            dtCayCanh = Data.GetDataToTable(sql); //Đọc dữ liệu từ bảng
+            dtCayCanh = Data.GetDataToTable(sql).AsEnumerable().Reverse().CopyToDataTable(); //Đọc dữ liệu từ bảng
             dgvCayCanh.DataSource = dtCayCanh; //Nguồn dữ liệu
             BindingDataGridViewUI();
             LoadImage(dtCayCanh);
@@ -64,7 +64,7 @@ namespace BanHangCayCanh
             txtGiaBan.Text = "";
             rtxtMota.Text = "";
             txtTimkiem.Text = "";
-            cbbLoaiCay.SelectedItem = cbbLoaiCay.Items.IndexOf(0);
+            cbbLoaiCay.Text = "";
             picCayCanh.BackgroundImage = Image.FromFile(defaultFilePath);
             currentFilePath = defaultFilePath;
             dgvCayCanh.ClearSelection();
@@ -92,6 +92,7 @@ namespace BanHangCayCanh
         {
             for (int i = 0; i < dt.Rows.Count; i++)
             {
+                dgvCayCanh.Rows[i].Cells["tenLoaiCay"].Value = GetTenCay(dtCayCanh.Rows[i]["idLoaiCay"].ToString());//Binding dữ liệu vào các cột
                 ((DataGridViewImageCell)dgvCayCanh.Rows[i].Cells[0]).Value = Image.FromFile(dt.Rows[i][7].ToString());
                 if (ListIdSelecteds.Count > 0)
                 {
@@ -102,6 +103,11 @@ namespace BanHangCayCanh
                     }
                 }
             }
+        }
+
+        private string GetTenCay(string value)
+        {
+            return Data.GetPropertiesById("LoaiCay", "idLoaiCay", value).Rows[0]["tenLoaiCay"].ToString();
         }
 
         private void btnChangeImage_Click(object sender, EventArgs e)
@@ -160,7 +166,7 @@ namespace BanHangCayCanh
             rtxtMota.Text = dgvCayCanh.CurrentRow.Cells["moTa"].Value.ToString();
             txtMauSac.Text = dgvCayCanh.CurrentRow.Cells["mauSac"].Value.ToString();
             txtTuoi.Text = dgvCayCanh.CurrentRow.Cells["tuoi"].Value.ToString();
-            cbbLoaiCay.Text = dgvCayCanh.CurrentRow.Cells["idLoaicay"].Value.ToString();
+            cbbLoaiCay.Text = dgvCayCanh.CurrentRow.Cells["tenLoaiCay"].Value.ToString();
             txtGiaBan.Text = dgvCayCanh.CurrentRow.Cells["gia"].Value.ToString();
             txtSoLuong.Text = dgvCayCanh.CurrentRow.Cells["soLuong"].Value.ToString();
             txtKichThuoc.Text = dgvCayCanh.CurrentRow.Cells["kichThuoc"].Value.ToString();
@@ -216,7 +222,7 @@ namespace BanHangCayCanh
                 txtGiaBan.Focus();
                 return;
             }
-            string idLoaiCay = cbbLoaiCay.Text; // GetIdLoaiCay(cbbLoaiCay.Text);
+            string idLoaiCay = GetIdLoaiCay(cbbLoaiCay.Text);
             /*if( CheckContainsName(txtTenLoaiCay.Text) )
             {
                 MessageBox.Show("Tên loại cây đã tồn tại", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -257,7 +263,7 @@ namespace BanHangCayCanh
             }
             sql = "UPDATE CayCanh SET tenCay=N'" + txtTenCay.Text.ToString() +
                   "', moTa = N'" + rtxtMota.Text +
-                  "', idLoaiCay=N'" + cbbLoaiCay.Text /*GetIdLoaiCay(cbbLoaiCay.Text)*/ +
+                  "', idLoaiCay=N'" + GetIdLoaiCay(cbbLoaiCay.Text) +
                   "', gia = " + txtGiaBan.Text +
                   ", soLuong = " + txtSoLuong.Text +
                   ", tuoi = " + txtTuoi.Text +
@@ -273,12 +279,12 @@ namespace BanHangCayCanh
 
         private void dgvCayCanh_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dgvCayCanh.CurrentCell.ColumnIndex.Equals(10))
+            if (dgvCayCanh.CurrentCell.ColumnIndex.Equals(11))
             {
                 DeleteData();
             }
 
-            if (dgvCayCanh.CurrentCell.ColumnIndex.Equals(11))
+            if (dgvCayCanh.CurrentCell.ColumnIndex.Equals(12))
             {
                 btnXoa.Visible = true;
                 if (Convert.ToBoolean(dgvCayCanh.CurrentCell.EditedFormattedValue))

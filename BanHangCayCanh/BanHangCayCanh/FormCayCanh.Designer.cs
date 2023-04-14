@@ -224,7 +224,7 @@
             mauSac.MinimumWidth = 6;
             mauSac.Name = "mauSac";
             mauSac.ReadOnly = true;
-            mauSac.Width = 85;
+            mauSac.Width = 92;
             // 
             // soLuong
             // 

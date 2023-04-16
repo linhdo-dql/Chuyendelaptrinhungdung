@@ -341,6 +341,7 @@ namespace BanHangCayCanh
                 LoadDataGridView();
                 btnXoa.Visible = false;
                 ListIdSelecteds.Clear();
+                txtSoLuongDaChon.Text = "Đã chọn: " + ListIdSelecteds.Count;
             }
         }
 

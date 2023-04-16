@@ -470,6 +470,7 @@
             lkQuayLaiDangNhap.TabIndex = 8;
             lkQuayLaiDangNhap.TabStop = true;
             lkQuayLaiDangNhap.Text = "Quay lại đăng nhập";
+            lkQuayLaiDangNhap.LinkClicked += lkQuayLaiDangNhap_LinkClicked;
             // 
             // btnTaoTaiKhoan
             // 

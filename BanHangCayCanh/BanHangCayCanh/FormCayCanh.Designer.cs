@@ -224,7 +224,7 @@
             mauSac.MinimumWidth = 6;
             mauSac.Name = "mauSac";
             mauSac.ReadOnly = true;
-            mauSac.Width = 92;
+            mauSac.Width = 85;
             // 
             // soLuong
             // 
@@ -575,6 +575,8 @@
             // 
             // cbbLoaiCay
             // 
+            cbbLoaiCay.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cbbLoaiCay.AutoCompleteSource = AutoCompleteSource.ListItems;
             cbbLoaiCay.FormattingEnabled = true;
             cbbLoaiCay.Location = new Point(112, 425);
             cbbLoaiCay.Margin = new Padding(3, 4, 3, 4);
@@ -779,11 +781,9 @@
         private Panel panel4;
         private Panel panel3;
         private PictureBox picCayCanh;
-        private TextBox txtSoLuong;
         private Label label9;
         private TextBox txtGiaBan;
         private Label label8;
-        private TextBox txtTuoi;
         private Label label7;
         private TextBox txtMauSac;
         private Label label6;
@@ -822,5 +822,7 @@
         private DataGridViewImageColumn delete;
         private DataGridViewCheckBoxColumn selected;
         private DataGridViewTextBoxColumn pathAnh;
+        private TextBox txtSoLuong;
+        private TextBox txtTuoi;
     }
 }

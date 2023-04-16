@@ -70,14 +70,19 @@
             label16 = new Label();
             label17 = new Label();
             panelKhachHang = new Panel();
+            txtTuoiKH = new TextBox();
             txtTenKhachHang = new TextBox();
             txtDiaChiKH = new TextBox();
             label11 = new Label();
             txtSDT = new TextBox();
+            label5 = new Label();
             label3 = new Label();
             cbbKhachHang = new ComboBox();
             label4 = new Label();
             panel2 = new Panel();
+            panel5 = new Panel();
+            cbbTrangThai = new ComboBox();
+            label6 = new Label();
             rbKhachHangCu = new RadioButton();
             rbKhachHangMoi = new RadioButton();
             panel11 = new Panel();
@@ -95,6 +100,7 @@
             panel12.SuspendLayout();
             panelKhachHang.SuspendLayout();
             panel2.SuspendLayout();
+            panel5.SuspendLayout();
             panel11.SuspendLayout();
             SuspendLayout();
             // 
@@ -391,6 +397,7 @@
             btnClosePanelSP.Size = new Size(20, 20);
             btnClosePanelSP.TabIndex = 23;
             btnClosePanelSP.UseVisualStyleBackColor = true;
+            btnClosePanelSP.Click += btnClosePanelSP_Click;
             // 
             // txtThanhTien
             // 
@@ -421,6 +428,7 @@
             btnSuaSP.Text = "Sửa";
             btnSuaSP.TextAlign = ContentAlignment.MiddleRight;
             btnSuaSP.UseVisualStyleBackColor = true;
+            btnSuaSP.Click += btnSuaSP_Click;
             // 
             // btnXoaSP
             // 
@@ -434,6 +442,7 @@
             btnXoaSP.Text = "Xóa";
             btnXoaSP.TextAlign = ContentAlignment.MiddleRight;
             btnXoaSP.UseVisualStyleBackColor = true;
+            btnXoaSP.Click += btnXoaSP_Click;
             // 
             // nudSoLuong
             // 
@@ -457,6 +466,7 @@
             btnThemSP.Text = "Thêm";
             btnThemSP.TextAlign = ContentAlignment.MiddleRight;
             btnThemSP.UseVisualStyleBackColor = true;
+            btnThemSP.Click += btnThemSP_Click;
             // 
             // txtGiaBan
             // 
@@ -496,6 +506,8 @@
             // 
             // cbbTenCay
             // 
+            cbbTenCay.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cbbTenCay.AutoCompleteSource = AutoCompleteSource.ListItems;
             cbbTenCay.FormattingEnabled = true;
             cbbTenCay.Location = new Point(118, 44);
             cbbTenCay.Name = "cbbTenCay";
@@ -553,10 +565,12 @@
             // 
             // panelKhachHang
             // 
+            panelKhachHang.Controls.Add(txtTuoiKH);
             panelKhachHang.Controls.Add(txtTenKhachHang);
             panelKhachHang.Controls.Add(txtDiaChiKH);
             panelKhachHang.Controls.Add(label11);
             panelKhachHang.Controls.Add(txtSDT);
+            panelKhachHang.Controls.Add(label5);
             panelKhachHang.Controls.Add(label3);
             panelKhachHang.Controls.Add(cbbKhachHang);
             panelKhachHang.Controls.Add(label4);
@@ -567,6 +581,13 @@
             panelKhachHang.TabIndex = 24;
             panelKhachHang.Visible = false;
             // 
+            // txtTuoiKH
+            // 
+            txtTuoiKH.Location = new Point(455, 9);
+            txtTuoiKH.Name = "txtTuoiKH";
+            txtTuoiKH.Size = new Size(225, 27);
+            txtTuoiKH.TabIndex = 17;
+            // 
             // txtTenKhachHang
             // 
             txtTenKhachHang.Location = new Point(131, 10);
@@ -576,9 +597,9 @@
             // 
             // txtDiaChiKH
             // 
-            txtDiaChiKH.Location = new Point(129, 53);
+            txtDiaChiKH.Location = new Point(132, 53);
             txtDiaChiKH.Name = "txtDiaChiKH";
-            txtDiaChiKH.Size = new Size(549, 27);
+            txtDiaChiKH.Size = new Size(230, 27);
             txtDiaChiKH.TabIndex = 15;
             // 
             // label11
@@ -593,19 +614,29 @@
             // 
             // txtSDT
             // 
-            txtSDT.Location = new Point(443, 10);
+            txtSDT.Location = new Point(455, 53);
             txtSDT.Name = "txtSDT";
-            txtSDT.Size = new Size(236, 27);
+            txtSDT.Size = new Size(225, 27);
             txtSDT.TabIndex = 13;
+            txtSDT.TextChanged += txtSDT_TextChanged;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(410, 56);
+            label5.Name = "label5";
+            label5.Size = new Size(39, 20);
+            label5.TabIndex = 12;
+            label5.Text = "SĐT:";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(399, 13);
+            label3.Location = new Point(408, 12);
             label3.Name = "label3";
-            label3.Size = new Size(39, 20);
+            label3.Size = new Size(41, 20);
             label3.TabIndex = 12;
-            label3.Text = "SĐT:";
+            label3.Text = "Tuổi:";
             // 
             // cbbKhachHang
             // 
@@ -628,6 +659,7 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(panel5);
             panel2.Controls.Add(rbKhachHangCu);
             panel2.Controls.Add(rbKhachHangMoi);
             panel2.Dock = DockStyle.Top;
@@ -635,6 +667,34 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(702, 35);
             panel2.TabIndex = 23;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(cbbTrangThai);
+            panel5.Controls.Add(label6);
+            panel5.Dock = DockStyle.Right;
+            panel5.Location = new Point(368, 0);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(334, 35);
+            panel5.TabIndex = 2;
+            // 
+            // cbbTrangThai
+            // 
+            cbbTrangThai.FormattingEnabled = true;
+            cbbTrangThai.Items.AddRange(new object[] { "Chờ xử lý", "Đang giao", "Chưa thanh toán", "Đã thanh toán" });
+            cbbTrangThai.Location = new Point(87, 4);
+            cbbTrangThai.Name = "cbbTrangThai";
+            cbbTrangThai.Size = new Size(225, 28);
+            cbbTrangThai.TabIndex = 18;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(3, 8);
+            label6.Name = "label6";
+            label6.Size = new Size(78, 20);
+            label6.TabIndex = 17;
+            label6.Text = "Trạng thái:";
             // 
             // rbKhachHangCu
             // 
@@ -681,15 +741,15 @@
             // dtpNgayLap
             // 
             dtpNgayLap.Format = DateTimePickerFormat.Short;
-            dtpNgayLap.Location = new Point(443, 7);
+            dtpNgayLap.Location = new Point(455, 7);
             dtpNgayLap.Name = "dtpNgayLap";
-            dtpNgayLap.Size = new Size(235, 27);
+            dtpNgayLap.Size = new Size(225, 27);
             dtpNgayLap.TabIndex = 15;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(368, 10);
+            label2.Location = new Point(377, 10);
             label2.Name = "label2";
             label2.Size = new Size(72, 20);
             label2.TabIndex = 14;
@@ -736,6 +796,8 @@
             panelKhachHang.PerformLayout();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            panel5.ResumeLayout(false);
+            panel5.PerformLayout();
             panel11.ResumeLayout(false);
             panel11.PerformLayout();
             ResumeLayout(false);
@@ -797,5 +859,10 @@
         private DataGridViewTextBoxColumn idHoaDon;
         private TextBox txtTenKhachHang;
         private TextBox txtIdNhanVien;
+        private TextBox txtTuoiKH;
+        private Label label5;
+        private Panel panel5;
+        private ComboBox cbbTrangThai;
+        private Label label6;
     }
 }

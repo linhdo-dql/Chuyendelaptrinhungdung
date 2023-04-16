@@ -73,6 +73,7 @@ namespace BanHangCayCanh
                         panelTaiKhoan.Visible = false;
                         menuStrip1.Visible = true;
                         menuTK.Text = "Tài khoản: " + cbbMaNVDangNhap.Text;
+                        ResetFormTaiKhoan();
                     }
                 }
                 else
@@ -84,7 +85,7 @@ namespace BanHangCayCanh
                         panelTaoTaiKhoan.BringToFront();
                     }
                 }
-                ResetFormTaiKhoan();
+
             }
         }
 
@@ -140,6 +141,7 @@ namespace BanHangCayCanh
             {
                 panelTaiKhoan.Visible = false;
                 menuStrip1.Visible = true;
+                Common.AddUpdateAppSettings("AccountSaved", cbbMaNVDangKy.Text);
                 menuTK.Text = "Tài khoản: " + cbbMaNVDangKy.Text;
             }
             else
@@ -214,5 +216,12 @@ namespace BanHangCayCanh
             ResetFormTaiKhoan();
         }
 
+        private void lkQuayLaiDangNhap_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            ResetFormTaiKhoan();
+            panelTaoTaiKhoan.SendToBack();
+            panelDangNhap.BringToFront();
+            LoadComboboxMaNV();
+        }
     }
 }

@@ -49,6 +49,7 @@ create table HoaDon(
 	idKH nvarchar(10) constraint fk_HD_MK foreign key references KhachHang(idKH),
 	chietKhau float,
 	tongTien float,
+	trangThai nvarchar(50)
 )
 go
 create table ChiTietHoaDon(

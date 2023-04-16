@@ -15,10 +15,14 @@ namespace BanHangCayCanh
     public partial class DialogAddBill : Form
     {
         public bool IsFromFormCayCanh { get; set; }
-
+        public DataTable dtKH;
         private bool isOldCustomer;
         private string currentId;
         public string currentIdHoaDon;
+        public bool IsDatLaiHoaDon { get; set; }
+
+        private string currentIdKhachHang;
+        private DataTable dtCurrentHD;
 
         public DialogAddBill()
         {
@@ -29,10 +33,53 @@ namespace BanHangCayCanh
             LoadCBBCustormer();
             LoadCBBStaff();
             LoadCBBItems();
+            cbbTrangThai.SelectedIndex = 0;
             if (IsFromFormCayCanh)
             {
                 LoadDataGridView(FormCayCanh.ListIdSelecteds);
             }
+            else
+            {
+                if (IsDatLaiHoaDon)
+                {
+                    currentIdHoaDon = FormBanHang.currentIdHD;
+                    LoadDataGridViewByIdHoaDon(currentIdHoaDon);
+                }
+                else
+                {
+                    int maxId = (Common.GetMaxId(Data.GetDataToTable("Select * from HoaDon"), "idHoaDon") + 1);
+                    currentIdHoaDon = "hd_" + (maxId < 10 ? "0" + maxId : maxId);
+                }
+            }
+        }
+
+        private void LoadDataGridViewByIdHoaDon(string currentIdHoaDon)
+        {
+            dtCurrentHD = Data.GetPropertiesById("HoaDon", "idHoaDon", currentIdHoaDon);
+            LoadDGVCTHDDatLai(Data.GetDataToTable("Select * from ChiTietHoaDon where idHoaDon like N'" + currentIdHoaDon + "'"));
+        }
+
+        private void LoadDGVCTHDDatLai(DataTable dataTable)
+        {
+            int idCTHD = Common.GetMaxId(Data.GetDataToTable("Select * from ChiTietHoaDon"), "idCTHD") + 1;
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                DataTable dt = Data.GetPropertiesById("CayCanh", "idCayCanh", dataTable.Rows[0]["idCayCanh"].ToString());
+                var index = dgvCTHD.Rows.Add();
+                DataGridViewRow dr = dgvCTHD.Rows[index];
+                dr.Cells["idCTHD"].Value = "cthd_" + (idCTHD < 10 ? "0" + idCTHD : idCTHD);
+                dr.Cells["idHoaDon"].Value = dataTable.Rows[i]["idHoaDon"];
+                dr.Cells["idCay"].Value = dataTable.Rows[i]["idCayCanh"];
+                dr.Cells["soLuong"].Value = dataTable.Rows[i]["soLuong"];
+                dr.Cells["donGia"].Value = dataTable.Rows[i]["donGia"];
+                dr.Cells["tenCay"].Value = dt.Rows[0]["tenCay"];
+                dr.Cells["thanhTien"].Value = (float.Parse(dataTable.Rows[i]["soLuong"].ToString()) * float.Parse(dataTable.Rows[i]["donGia"].ToString())) + "";
+                idCTHD += 1;
+            }
+            txtGiamGia.Text = "0";
+            ResetTongTien();
+            int maxId = (Common.GetMaxId(Data.GetDataToTable("Select * from HoaDon"), "idHoaDon") + 1);
+            currentIdHoaDon = "hd_" + (maxId < 10 ? "0" + maxId : maxId);
         }
 
         private void LoadDataGridView(List<string> listIdSelecteds)
@@ -87,7 +134,11 @@ namespace BanHangCayCanh
         private void LoadCBBCustormer()
         {
             string sql = "Select * from KhachHang";
+            dtKH = Data.GetDataToTable(sql);
             Data.FillCombo(sql, cbbKhachHang, "idKH", "tenKH");
+            cbbKhachHang.Text = "";
+            cbbKhachHang.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cbbKhachHang.AutoCompleteSource = AutoCompleteSource.ListItems;
         }
 
         private void LoadInfoCustormer(string id)
@@ -97,7 +148,9 @@ namespace BanHangCayCanh
             {
                 txtSDT.Text = dt.Rows[0]["sdtKH"].ToString();
                 txtDiaChiKH.Text = dt.Rows[0]["diaChiKH"].ToString();
+                txtTuoiKH.Text = dt.Rows[0]["tuoiKH"].ToString();
             }
+            currentIdKhachHang = cbbKhachHang.SelectedValue.ToString();
         }
 
         private void cbbKhachHang_SelectedIndexChanged(object sender, EventArgs e)
@@ -108,7 +161,15 @@ namespace BanHangCayCanh
 
         private void DialogAddBill_FormClosed(object sender, FormClosedEventArgs e)
         {
-            new FormCayCanh().Show();
+            if (IsFromFormCayCanh)
+            {
+                new FormCayCanh().Show();
+            }
+            else
+            {
+                new FormBanHang().Show();
+            }
+
         }
 
         private void dgvCTHD_Click(object sender, EventArgs e)
@@ -146,7 +207,7 @@ namespace BanHangCayCanh
         {
             if (IsHavedItems())
             {
-                DialogResult r = MessageBox.Show("Đã có cây cảnh này trong danh sách! Bạn có muốn tăng số lượng của cây trong danh sách hiện có?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                DialogResult r = MessageBox.Show("Đã có cây cảnh này trong danh sách! Bạn có muốn tăng số lượng của cây trong danh sách hiện có?", "Thông báo", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                 if (r == DialogResult.Yes)
                 {
                     float newTotal = float.Parse(txtGiaBan.Text) * int.Parse(nudSoLuong.Value.ToString());
@@ -161,11 +222,14 @@ namespace BanHangCayCanh
                         }
                     }
                 }
-                else
+                else if (r == DialogResult.No)
                 {
+
+                    int idCTHD = dgvCTHD.Rows.Count > 0 ?
+                           Common.GetNumberOfId(dgvCTHD.Rows[dgvCTHD.Rows.Count - 1].Cells["idCTHD"].Value.ToString()) + 1 :
+                           Common.GetMaxId(Data.GetDataToTable("Select * from ChiTietHoaDon"), "idCTHD") + 1;
                     var index = dgvCTHD.Rows.Add();
                     DataGridViewRow dr = dgvCTHD.Rows[index];
-                    int idCTHD = (Common.GetNumberOfId(dgvCTHD.Rows[dgvCTHD.Rows.Count - 2].Cells["idCTHD"].Value.ToString()) + 1);
                     dr.Cells["idCTHD"].Value = "cthd_" + (idCTHD < 10 ? "0" + idCTHD : idCTHD);
                     dr.Cells["idHoaDon"].Value = idHoaDon;
                     dr.Cells["idCay"].Value = cbbTenCay.SelectedValue;
@@ -174,12 +238,19 @@ namespace BanHangCayCanh
                     dr.Cells["tenCay"].Value = cbbTenCay.Text;
                     dr.Cells["thanhTien"].Value = txtThanhTien.Text;
                 }
+                else
+                {
+                    return;
+                }
             }
             else
             {
+
+                int idCTHD = dgvCTHD.Rows.Count > 0 ?
+                       Common.GetNumberOfId(dgvCTHD.Rows[dgvCTHD.Rows.Count - 1].Cells["idCTHD"].Value.ToString()) + 1 :
+                       Common.GetMaxId(Data.GetDataToTable("Select * from ChiTietHoaDon"), "idCTHD") + 1;
                 var index = dgvCTHD.Rows.Add();
                 DataGridViewRow dr = dgvCTHD.Rows[index];
-                int idCTHD = (Common.GetNumberOfId(dgvCTHD.Rows[dgvCTHD.Rows.Count - 2].Cells["idCTHD"].Value.ToString()) + 1);
                 dr.Cells["idCTHD"].Value = "cthd_" + (idCTHD < 10 ? "0" + idCTHD : idCTHD);
                 dr.Cells["idHoaDon"].Value = idHoaDon;
                 dr.Cells["idCay"].Value = cbbTenCay.SelectedValue;
@@ -293,9 +364,11 @@ namespace BanHangCayCanh
                     dgvCTHD.Rows.Remove(dgvCTHD.Rows[i]);
                 }
             }
+            int startId = Common.GetMaxId(Data.GetDataToTable("Select * from ChiTietHoaDon"), "idCTHD") + 1;
             for (int i = 0; i < dgvCTHD.Rows.Count; i++)
             {
-                dgvCTHD.Rows[i].Cells["idCTHD"].Value = "cthd_" + (i < 10 ? "0" + i : i);
+                startId += i;
+                dgvCTHD.Rows[i].Cells["idCTHD"].Value = "cthd_" + (startId < 10 ? "0" + startId : startId);
             }
             ResetFormSP();
             panelSanPham.Visible = false;
@@ -309,9 +382,9 @@ namespace BanHangCayCanh
         private void ResetDialog()
         {
             dgvCTHD.ClearSelection();
-            txtIdNhanVien.Text = "";
             cbbKhachHang.Text = "";
             txtDiaChiKH.Text = "";
+            txtTuoiKH.Text = "";
             txtSDT.Text = "";
             ResetFormSP();
             panelSanPham.Visible = false;
@@ -320,7 +393,6 @@ namespace BanHangCayCanh
         private void btnTaoHoaDon_Click(object sender, EventArgs e)
         {
             InsertHoaDon();
-            InsertCTHD();
         }
 
         private void InsertCTHD()
@@ -346,18 +418,53 @@ namespace BanHangCayCanh
                 MessageBox.Show("Không còn cây cảnh nào trong hóa đơn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if (cbbKhachHang.Text == "") //nếu chưa chọn khách hàng
+            if (!isOldCustomer)
             {
-                MessageBox.Show("Bạn chưa chọn khách hàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (txtTenKhachHang.Text == "" || txtDiaChiKH.Text == "" || txtSDT.Text == "" || txtTuoiKH.Text == "")
+                {
+                    MessageBox.Show("Vui lòng nhập đủ thông tin!", "Thông báo");
+                    return;
+                }
+                Regex regex = new Regex(@"(\+?84|0)\d{9,10}");
+                if (!regex.Match(txtSDT.Text).Success)
+                {
+                    MessageBox.Show("Vui lòng nhập đúng số điện thoại!", "Thông báo");
+                    return;
+                }
+                regex = new Regex("^[0-9]+$");
+                if (!regex.Match(txtTuoiKH.Text).Success)
+                {
+                    MessageBox.Show("Tuổi khách hàng không hợp lệ!", "Thông báo");
+                    return;
+                }
+                int value = Common.GetMaxId(dtKH, "idKH") + 1;
+                string idKH = "kh_" + (value < 10 ? "0" + value : value);
+                string sqlKH = "Insert into KhachHang VALUES (N'" + idKH +
+                               "',N'" + txtTenKhachHang.Text +
+                               "',N'" + txtTuoiKH.Text +
+                               "',N'" + txtDiaChiKH.Text +
+                               "',N'" + txtSDT.Text +
+                               "')";
+                Data.RunSQL(sqlKH);
+                currentIdKhachHang = idKH;
+            }
+
+            bool validTenKhachHang = isOldCustomer ? cbbKhachHang.Text.Trim() == "" : txtTenKhachHang.Text.Trim() == "";
+            if (validTenKhachHang) //nếu chưa chọn khách hàng
+            {
+                MessageBox.Show("Bạn chưa nhập khách hàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             sql = "Insert into HoaDon VALUES (N'" + currentIdHoaDon +
                   "',N'" + txtIdNhanVien.Text +
                   "',N'" + dtpNgayLap.Text +
-                  "',N'" + cbbKhachHang.SelectedValue +
+                  "',N'" + currentIdKhachHang +
                   "'," + txtGiamGia.Text +
-                  "," + txtTongTien.Text + ")";
+                  "," + txtTongTien.Text +
+                  ",N'" + cbbTrangThai.Text +
+                  "')";
             Data.RunSQL(sql);
+            InsertCTHD();
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
@@ -376,6 +483,7 @@ namespace BanHangCayCanh
             panelKhachHang.Visible = true;
             txtTenKhachHang.Visible = true;
             cbbKhachHang.Visible = false;
+            ResetDialog();
         }
 
         private void rbKhachHangCu_CheckedChanged(object sender, EventArgs e)
@@ -384,6 +492,27 @@ namespace BanHangCayCanh
             panelKhachHang.Visible = true;
             cbbKhachHang.Visible = true;
             txtTenKhachHang.Visible = false;
+            ResetDialog();
+        }
+
+        private void txtSDT_TextChanged(object sender, EventArgs e)
+        {
+            if (isOldCustomer)
+            {
+                FillComboBoxKH();
+            }
+        }
+
+        private void FillComboBoxKH()
+        {
+            foreach (DataRow r in dtKH.Rows)
+            {
+                if (r["sdtKH"].ToString().Equals(txtSDT.Text))
+                {
+                    cbbKhachHang.Text = r["tenKH"].ToString();
+                    break;
+                }
+            }
         }
     }
 
